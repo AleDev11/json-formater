@@ -6,10 +6,11 @@ import { ErrorDialog } from '@/components/ErrorDialog';
 import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
 import { GeneratedPythonModels } from '@/components/GeneratedPythonModels';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
+import Footer from '@/components/Footer'; // Importación del Footer
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import jsonToTS from 'json-to-ts';
 import { quicktype, InputData, jsonInputForTargetLanguage } from 'quicktype-core';
+import jsonToTS from 'json-to-ts';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
@@ -239,6 +240,8 @@ export default function Home() {
         message={dialogMessage}
         isError={isError}
       />
+
+      <Footer />
     </div>
   );
 }
