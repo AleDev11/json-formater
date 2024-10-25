@@ -93,19 +93,27 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-white mb-8 text-center">
           JSON Formatter
         </h1>
-        
+
         <JsonInputForm onFormat={handleFormatJson} />
 
         {formattedJsonList.length > 0 && (
           <div className="mb-8 p-4 bg-gray-700 text-white rounded-md shadow-md">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-xl font-semibold text-blue-300">Último JSON Formateado:</h2>
-              <button
-                onClick={() => handleCopyToClipboard(formattedJsonList[0])}
-                className="text-sm px-3 py-1 bg-green-600 rounded-md hover:bg-green-500"
-              >
-                Copiar
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => generateTypescriptInterfaces()}
+                  className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
+                >
+                  Generar Interfaces TypeScript
+                </button>
+                <button
+                  onClick={() => handleCopyToClipboard(formattedJsonList[0])}
+                  className="text-sm px-3 py-1 bg-green-600 rounded-md hover:bg-green-500"
+                >
+                  Copiar
+                </button>
+              </div>
             </div>
             <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
               <SyntaxHighlighter
@@ -117,12 +125,6 @@ export default function Home() {
                 {formattedJsonList[0]}
               </SyntaxHighlighter>
             </div>
-            <button
-              onClick={() => generateTypescriptInterfaces()}
-              className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Generar Interfaces TypeScript
-            </button>
           </div>
         )}
 
