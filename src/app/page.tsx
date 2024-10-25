@@ -3,17 +3,19 @@ import { useState, useEffect, useRef } from 'react';
 import { JsonInputForm } from '@/components/JsonInputForm';
 import { FormattedJsonList } from '@/components/FormattedJsonList';
 import { ErrorDialog } from '@/components/ErrorDialog';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import jsonToTS from 'json-to-ts'; // Importar la librería para generar las interfaces
+import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
+  const [generatedInterfaces, setGeneratedInterfaces] = useState<string[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [isError, setIsError] = useState(true);
   const formattedListRef = useRef<HTMLDivElement | null>(null);
+  const interfacesSectionRef = useRef<HTMLDivElement | null>(null); // Ref para las interfaces generadas
 
   // Cargar datos desde el localStorage al iniciar
   useEffect(() => {
@@ -56,13 +58,37 @@ export default function Home() {
     setShowDialog(true);
   };
 
+  // Función para generar las interfaces TypeScript
+  const generateTypescriptInterfaces = () => {
+    if (formattedJsonList.length === 0) return;
+
+    try {
+      const parsedJson = JSON.parse(formattedJsonList[0]);
+      const interfacesArray = jsonToTS(parsedJson);
+      const interfaces = interfacesArray.map((typeInterface) => typeInterface).join('\n\n');
+      setGeneratedInterfaces([interfaces]);
+
+      // Scroll automático a la sección de interfaces generadas
+      setTimeout(() => {
+        if (interfacesSectionRef.current) {
+          interfacesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } catch (error) {
+      setDialogTitle('Error al Generar Interfaces');
+      setDialogMessage('No se pudieron generar las interfaces. Asegúrate de que el JSON esté bien formateado.');
+      setIsError(true);
+      setShowDialog(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-8 text-center">
           JSON Formatter
         </h1>
-
+        
         <JsonInputForm onFormat={handleFormatJson} />
 
         {formattedJsonList.length > 0 && (
@@ -76,26 +102,31 @@ export default function Home() {
                 Copiar
               </button>
             </div>
-            <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
-              <SyntaxHighlighter
-                language="json"
-                style={atomDark}
-                wrapLines={true}
-                customStyle={{ backgroundColor: 'transparent' }}
-              >
-                {formattedJsonList[0]}
-              </SyntaxHighlighter>
-            </div>
+            <pre className="whitespace-pre-wrap break-all bg-gray-800 p-3 rounded-md max-h-64 overflow-y-auto">
+              {formattedJsonList[0]}
+            </pre>
+            <button
+              onClick={generateTypescriptInterfaces}
+              className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Generar Interfaces TypeScript
+            </button>
           </div>
         )}
-
 
         <FormattedJsonList
           jsonList={formattedJsonList}
           expandedIndex={expandedIndex}
-          onToggleExpand={(index: number) => setExpandedIndex(expandedIndex === index ? null : index)}
+          onToggleExpand={(index) => setExpandedIndex(expandedIndex === index ? null : index)}
           onCopy={handleCopyToClipboard}
         />
+
+        {/* Sección de interfaces generadas con referencia */}
+        <div ref={interfacesSectionRef}>
+          {generatedInterfaces.length > 0 && (
+            <GeneratedInterfaces interfaces={generatedInterfaces} />
+          )}
+        </div>
       </div>
 
       <ErrorDialog
