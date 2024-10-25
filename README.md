@@ -66,15 +66,7 @@ Sigue estos pasos para instalar y ejecutar el proyecto:
 
 ### **Borrar Historial**
 - Haz clic en el botón **"Borrar Historial"** para eliminar todos los JSON formateados almacenados en la aplicación.
-
-## 📸 Capturas de Pantalla
-
-### **Interfaz Principal**
-![Captura de pantalla de la interfaz principal](ruta/a/tu/captura1.png)
-
-### **Generación de Modelos Python**
-![Generación de Modelos Python](ruta/a/tu/captura2.png)
-
+  
 ## 🔧 Tecnologías Utilizadas
 
 - **Next.js** - Framework de React para aplicaciones web 🌐.
