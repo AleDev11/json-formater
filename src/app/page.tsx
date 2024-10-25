@@ -45,6 +45,7 @@ export default function Home() {
         }
       }, 100);
     } catch (error) {
+      console.error(error);
       setDialogTitle('Error de Formato JSON');
       setDialogMessage('El JSON ingresado no es válido. Por favor, verifica la sintaxis.');
       setIsError(true);
@@ -78,6 +79,7 @@ export default function Home() {
         }
       }, 100);
     } catch (error) {
+      console.error(error);
       setDialogTitle('Error al Generar Interfaces');
       setDialogMessage('No se pudieron generar las interfaces. Asegúrate de que el JSON esté bien formateado.');
       setIsError(true);
