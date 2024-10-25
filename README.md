@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📋 JSON Formatter - Creado por AleDev 🚀
 
-## Getting Started
+¡Bienvenido al proyecto **JSON Formatter**! 🎉 Esta aplicación te permite formatear y validar datos JSON, así como generar **Interfaces TypeScript** y **Modelos Python** a partir de ellos. Todo de manera fácil y rápida. Además, ¡puedes visualizar y gestionar un historial de JSONs previamente formateados! 📝
 
-First, run the development server:
+## 🌟 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Formatear y Validar JSON** con un solo clic.
+- 🎨 **Colorea y formatea** los datos JSON para mejor legibilidad.
+- 📝 **Genera Interfaces TypeScript** desde datos JSON.
+- 🐍 **Genera Modelos Python** a partir de JSON automáticamente.
+- 📜 **Mantiene un historial** de JSONs formateados.
+- 🗑️ **Borrar Historial** con un botón.
+- ☁️ **Persistencia local** usando `localStorage`.
+- 📤 **Copiar al portapapeles** el JSON, interfaces TypeScript o modelos Python generados.
+- 🔝 **Botón de scroll hacia arriba** para una navegación rápida.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📦 Instalación
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Sigue estos pasos para instalar y ejecutar el proyecto:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clona el repositorio**:
+   
+   ```bash
+   git clone https://github.com/tu-usuario/json-formatter.git
+   ```
+   
+2. **Navega al directorio del proyecto**:
+   
+   ```bash
+   cd json-formatter
+   ```
+   
+3. **Instala las dependencias** usando `npm`:
+   
+   ```bash
+   npm install
+   ```
+   
+   > **Nota:** Asegúrate de tener `Node.js` instalado. 📦
 
-## Learn More
+4. **Ejecuta la aplicación**:
+   
+   ```bash
+   npm run dev
+   ```
+   
+   La aplicación estará disponible en: **http://localhost:3000** 🌐
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Uso
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### **Formatear JSON**
+1. Ingresa un JSON en el área de texto proporcionada.
+2. Haz clic en el botón **"Formatear y Validar JSON"**. ✅
+3. El JSON será formateado y coloreado automáticamente.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### **Generar Interfaces TypeScript**
+1. Una vez formateado un JSON, haz clic en **"Generar Interfaces TypeScript"**.
+2. Las interfaces se generarán y estarán disponibles en la sección correspondiente.
 
-## Deploy on Vercel
+### **Generar Modelos Python**
+1. Haz clic en el botón **"Generar Modelos Python"**.
+2. Se generarán modelos Python a partir del JSON formateado.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### **Copiar Contenidos**
+- Usa los botones **"Copiar"** en cada sección para copiar fácilmente JSON, Interfaces TypeScript o Modelos Python al portapapeles. 📋
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### **Borrar Historial**
+- Haz clic en el botón **"Borrar Historial"** para eliminar todos los JSON formateados almacenados en la aplicación.
+
+## 📸 Capturas de Pantalla
+
+### **Interfaz Principal**
+![Captura de pantalla de la interfaz principal](ruta/a/tu/captura1.png)
+
+### **Generación de Modelos Python**
+![Generación de Modelos Python](ruta/a/tu/captura2.png)
+
+## 🔧 Tecnologías Utilizadas
+
+- **Next.js** - Framework de React para aplicaciones web 🌐.
+- **TypeScript** - Lenguaje para un tipado más seguro 🔤.
+- **Tailwind CSS** - Para estilizar la interfaz de forma rápida y sencilla 🎨.
+- **quicktype-core** - Librería para convertir JSON a modelos Python.
+- **react-syntax-highlighter** - Para colorear y formatear el JSON en la interfaz.
+
+## 📄 Licencia
+
+Este proyecto está bajo la **Licencia MIT**. ¡Siéntete libre de usarlo! 📜
+
+## 📬 Contacto
+
+**AleDev** - Si tienes alguna pregunta o sugerencia, no dudes en contactarme:
+
+- GitHub: [AleDev11](https://github.com/AleDev11)
+- Email: aledeveloper11@gmail.com ✉️
+
+---
+
+¡Gracias por visitar el proyecto **JSON Formatter**! 🌟 ¡Espero que te sea útil! 😊
