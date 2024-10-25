@@ -2,7 +2,7 @@
 
 ¡Bienvenido al proyecto **JSON Formatter**! 🎉 Esta aplicación te permite formatear y validar datos JSON, así como generar **Interfaces TypeScript** y **Modelos Python** a partir de ellos. Todo de manera fácil y rápida. Además, ¡puedes visualizar y gestionar un historial de JSONs previamente formateados! 📝
 
-## 🌐 [Enlace Web](https://aledev11.github.io/json-formater/)
+## 🌐 [Enlace Web](https://aledev11.github.io/json-formatter/)
 
 ## 🌟 Características
 
