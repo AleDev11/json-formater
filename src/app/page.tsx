@@ -37,6 +37,7 @@ export default function Home() {
     localStorage.setItem('formattedJsonList', JSON.stringify(formattedJsonList));
   }, [formattedJsonList]);
 
+  // Formatear JSON y agregarlo a la lista
   const handleFormatJson = (jsonInput: string) => {
     try {
       const parsedJson = JSON.parse(jsonInput);
@@ -56,6 +57,14 @@ export default function Home() {
       setIsError(true);
       setShowDialog(true);
     }
+  };
+
+  // Borrar historial almacenado en localStorage
+  const handleClearHistory = () => {
+    localStorage.removeItem('formattedJsonList');
+    setFormattedJsonList([]);
+    setGeneratedInterfaces([]);
+    setGeneratedPythonModels([]);
   };
 
   const handleCopyToClipboard = (text: string) => {
@@ -136,6 +145,17 @@ export default function Home() {
           JSON Formatter
         </h1>
 
+        {/* Botón para borrar historial */}
+        <div className="flex justify-end my-4">
+          <button
+            onClick={handleClearHistory}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Borrar Historial
+          </button>
+        </div>
+
+        {/* Formulario de entrada JSON */}
         <JsonInputForm onFormat={handleFormatJson} />
 
         {formattedJsonList.length > 0 && (
