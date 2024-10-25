@@ -1,4 +1,6 @@
 import React from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 interface FormattedJsonListProps {
   jsonList: string[];
@@ -53,9 +55,16 @@ export function FormattedJsonList({
                     </button>
                   </div>
                 </div>
-                <pre className="whitespace-pre-wrap break-all bg-gray-800 p-3 rounded-md">
-                  {displayText}
-                </pre>
+                <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
+                  <SyntaxHighlighter
+                    language="json"
+                    style={atomDark}
+                    wrapLines={true}
+                    customStyle={{ backgroundColor: 'transparent' }} // Para que el fondo combine
+                  >
+                    {displayText}
+                  </SyntaxHighlighter>
+                </div>
               </div>
             );
           })

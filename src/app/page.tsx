@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { JsonInputForm } from '@/components/JsonInputForm';
 import { FormattedJsonList } from '@/components/FormattedJsonList';
 import { ErrorDialog } from '@/components/ErrorDialog';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
@@ -60,7 +62,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-white mb-8 text-center">
           JSON Formatter
         </h1>
-        
+
         <JsonInputForm onFormat={handleFormatJson} />
 
         {formattedJsonList.length > 0 && (
@@ -74,11 +76,19 @@ export default function Home() {
                 Copiar
               </button>
             </div>
-            <pre className="whitespace-pre-wrap break-all bg-gray-800 p-3 rounded-md max-h-64 overflow-y-auto">
-              {formattedJsonList[0]}
-            </pre>
+            <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
+              <SyntaxHighlighter
+                language="json"
+                style={atomDark}
+                wrapLines={true}
+                customStyle={{ backgroundColor: 'transparent' }}
+              >
+                {formattedJsonList[0]}
+              </SyntaxHighlighter>
+            </div>
           </div>
         )}
+
 
         <FormattedJsonList
           jsonList={formattedJsonList}
