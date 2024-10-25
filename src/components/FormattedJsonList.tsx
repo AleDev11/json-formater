@@ -7,6 +7,7 @@ interface FormattedJsonListProps {
   expandedIndex: number | null;
   onToggleExpand: (index: number) => void;
   onCopy: (text: string) => void;
+  onGenerateInterface: (jsonString: string) => void; // Nueva función
 }
 
 export function FormattedJsonList({
@@ -14,6 +15,7 @@ export function FormattedJsonList({
   expandedIndex,
   onToggleExpand,
   onCopy,
+  onGenerateInterface,
 }: FormattedJsonListProps) {
   return (
     <div className="bg-gray-800 p-6 rounded-md shadow-md">
@@ -53,6 +55,12 @@ export function FormattedJsonList({
                     >
                       Copiar
                     </button>
+                    <button
+                      onClick={() => onGenerateInterface(formattedJson)}
+                      className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
+                    >
+                      Generar Interfaz
+                    </button>
                   </div>
                 </div>
                 <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
@@ -60,7 +68,7 @@ export function FormattedJsonList({
                     language="json"
                     style={atomDark}
                     wrapLines={true}
-                    customStyle={{ backgroundColor: 'transparent' }} // Para que el fondo combine
+                    customStyle={{ backgroundColor: 'transparent' }}
                   >
                     {displayText}
                   </SyntaxHighlighter>

@@ -5,6 +5,8 @@ import { FormattedJsonList } from '@/components/FormattedJsonList';
 import { ErrorDialog } from '@/components/ErrorDialog';
 import jsonToTS from 'json-to-ts'; // Importar la librería para generar las interfaces
 import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
@@ -53,17 +55,18 @@ export default function Home() {
   const handleCopyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setDialogTitle('Copiado al Portapapeles');
-    setDialogMessage('El contenido JSON se ha copiado correctamente.');
+    setDialogMessage('El contenido se ha copiado correctamente.');
     setIsError(false);
     setShowDialog(true);
   };
 
   // Función para generar las interfaces TypeScript
-  const generateTypescriptInterfaces = () => {
-    if (formattedJsonList.length === 0) return;
+  const generateTypescriptInterfaces = (jsonString?: string) => {
+    const jsonToParse = jsonString || formattedJsonList[0];
+    if (!jsonToParse) return;
 
     try {
-      const parsedJson = JSON.parse(formattedJsonList[0]);
+      const parsedJson = JSON.parse(jsonToParse);
       const interfacesArray = jsonToTS(parsedJson);
       const interfaces = interfacesArray.map((typeInterface) => typeInterface).join('\n\n');
       setGeneratedInterfaces([interfaces]);
@@ -102,11 +105,18 @@ export default function Home() {
                 Copiar
               </button>
             </div>
-            <pre className="whitespace-pre-wrap break-all bg-gray-800 p-3 rounded-md max-h-64 overflow-y-auto">
-              {formattedJsonList[0]}
-            </pre>
+            <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
+              <SyntaxHighlighter
+                language="json"
+                style={atomDark}
+                wrapLines={true}
+                customStyle={{ backgroundColor: 'transparent' }}
+              >
+                {formattedJsonList[0]}
+              </SyntaxHighlighter>
+            </div>
             <button
-              onClick={generateTypescriptInterfaces}
+              onClick={() => generateTypescriptInterfaces()}
               className="w-full mt-4 px-4 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               Generar Interfaces TypeScript
@@ -119,12 +129,21 @@ export default function Home() {
           expandedIndex={expandedIndex}
           onToggleExpand={(index) => setExpandedIndex(expandedIndex === index ? null : index)}
           onCopy={handleCopyToClipboard}
+          onGenerateInterface={generateTypescriptInterfaces} // Nueva función para generar interfaz desde historial
         />
 
         {/* Sección de interfaces generadas con referencia */}
         <div ref={interfacesSectionRef}>
           {generatedInterfaces.length > 0 && (
-            <GeneratedInterfaces interfaces={generatedInterfaces} />
+            <div className="relative">
+              <GeneratedInterfaces interfaces={generatedInterfaces} />
+              <button
+                onClick={() => handleCopyToClipboard(generatedInterfaces.join('\n\n'))}
+                className="absolute top-4 right-4 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-500"
+              >
+                Copiar Interfaces
+              </button>
+            </div>
           )}
         </div>
       </div>
