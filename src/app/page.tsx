@@ -7,10 +7,12 @@ import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import jsonToTS from 'json-to-ts';
+import { quicktype, InputData, jsonInputForTargetLanguage } from 'quicktype-core';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
   const [generatedInterfaces, setGeneratedInterfaces] = useState<string[]>([]);
+  const [generatedPythonModels, setGeneratedPythonModels] = useState<string[]>([]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
@@ -18,6 +20,7 @@ export default function Home() {
   const [isError, setIsError] = useState(true);
   const formattedListRef = useRef<HTMLDivElement | null>(null);
   const interfacesSectionRef = useRef<HTMLDivElement | null>(null);
+  const pythonModelsSectionRef = useRef<HTMLDivElement | null>(null);
 
   // Cargar datos desde el localStorage al iniciar
   useEffect(() => {
@@ -87,6 +90,43 @@ export default function Home() {
     }
   };
 
+  // Función para generar modelos Python usando `quicktype-core`
+  const generatePythonModels = async (jsonString?: string) => {
+    const jsonToParse = jsonString || formattedJsonList[0];
+    if (!jsonToParse) return;
+
+    try {
+      const parsedJson = JSON.parse(jsonToParse);
+      const inputData = new InputData();
+      const jsonInput = jsonInputForTargetLanguage('python');
+      await jsonInput.addSource({ name: "GeneratedModel", samples: [JSON.stringify(parsedJson)] });
+      inputData.addInput(jsonInput);
+
+      const { lines } = await quicktype({
+        inputData,
+        lang: 'python',
+        rendererOptions: {
+          'just-types': 'true'
+        }
+      });
+
+      setGeneratedPythonModels([lines.join('\n')]);
+
+      // Scroll automático a la sección de modelos Python generados
+      setTimeout(() => {
+        if (pythonModelsSectionRef.current) {
+          pythonModelsSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } catch (error) {
+      console.error(error);
+      setDialogTitle('Error al Generar Modelos Python');
+      setDialogMessage('No se pudieron generar los modelos. Asegúrate de que el JSON esté bien formateado.');
+      setIsError(true);
+      setShowDialog(true);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
@@ -106,6 +146,12 @@ export default function Home() {
                   className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
                 >
                   Generar Interfaces TypeScript
+                </button>
+                <button
+                  onClick={() => generatePythonModels()}
+                  className="text-sm px-3 py-1 bg-yellow-600 rounded-md hover:bg-yellow-500"
+                >
+                  Generar Modelos Python
                 </button>
                 <button
                   onClick={() => handleCopyToClipboard(formattedJsonList[0])}
@@ -133,7 +179,7 @@ export default function Home() {
           expandedIndex={expandedIndex}
           onToggleExpand={(index) => setExpandedIndex(expandedIndex === index ? null : index)}
           onCopy={handleCopyToClipboard}
-          onGenerateInterface={generateTypescriptInterfaces} // Nueva función para generar interfaz desde historial
+          onGenerateInterface={generateTypescriptInterfaces}
         />
 
         {/* Sección de interfaces generadas con referencia */}
@@ -147,6 +193,37 @@ export default function Home() {
               >
                 Copiar Interfaces
               </button>
+            </div>
+          )}
+        </div>
+
+        {/* Sección de modelos Python generados con referencia */}
+        <div ref={pythonModelsSectionRef}>
+          {generatedPythonModels.length > 0 && (
+            <div className="relative mt-8">
+              <div className="bg-gray-800 p-6 rounded-md shadow-md">
+                <h2 className="text-2xl font-bold text-white mb-4">Modelos Generados (Python)</h2>
+                <div className="max-h-96 overflow-y-auto space-y-4">
+                  {generatedPythonModels.map((model, index) => (
+                    <div key={index} className="bg-gray-700 p-4 rounded-md">
+                      <SyntaxHighlighter
+                        language="python"
+                        style={atomDark}
+                        wrapLines={true}
+                        customStyle={{ backgroundColor: 'transparent' }}
+                      >
+                        {model}
+                      </SyntaxHighlighter>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => handleCopyToClipboard(generatedPythonModels.join('\n\n'))}
+                  className="w-full mt-4 px-4 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-500"
+                >
+                  Copiar Modelos Python
+                </button>
+              </div>
             </div>
           )}
         </div>
