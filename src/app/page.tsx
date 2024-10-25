@@ -3,10 +3,10 @@ import { useState, useEffect, useRef } from 'react';
 import { JsonInputForm } from '@/components/JsonInputForm';
 import { FormattedJsonList } from '@/components/FormattedJsonList';
 import { ErrorDialog } from '@/components/ErrorDialog';
-import jsonToTS from 'json-to-ts'; // Importar la librería para generar las interfaces
 import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import jsonToTS from 'json-to-ts';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
@@ -17,7 +17,7 @@ export default function Home() {
   const [dialogMessage, setDialogMessage] = useState('');
   const [isError, setIsError] = useState(true);
   const formattedListRef = useRef<HTMLDivElement | null>(null);
-  const interfacesSectionRef = useRef<HTMLDivElement | null>(null); // Ref para las interfaces generadas
+  const interfacesSectionRef = useRef<HTMLDivElement | null>(null);
 
   // Cargar datos desde el localStorage al iniciar
   useEffect(() => {
