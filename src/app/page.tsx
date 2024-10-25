@@ -4,6 +4,8 @@ import { JsonInputForm } from '@/components/JsonInputForm';
 import { FormattedJsonList } from '@/components/FormattedJsonList';
 import { ErrorDialog } from '@/components/ErrorDialog';
 import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
+import { GeneratedPythonModels } from '@/components/GeneratedPythonModels';
+import ScrollToTopButton from '@/components/ScrollToTopButton';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import jsonToTS from 'json-to-ts';
@@ -200,34 +202,15 @@ export default function Home() {
         {/* Sección de modelos Python generados con referencia */}
         <div ref={pythonModelsSectionRef}>
           {generatedPythonModels.length > 0 && (
-            <div className="relative mt-8">
-              <div className="bg-gray-800 p-6 rounded-md shadow-md">
-                <h2 className="text-2xl font-bold text-white mb-4">Modelos Generados (Python)</h2>
-                <div className="max-h-96 overflow-y-auto space-y-4">
-                  {generatedPythonModels.map((model, index) => (
-                    <div key={index} className="bg-gray-700 p-4 rounded-md">
-                      <SyntaxHighlighter
-                        language="python"
-                        style={atomDark}
-                        wrapLines={true}
-                        customStyle={{ backgroundColor: 'transparent' }}
-                      >
-                        {model}
-                      </SyntaxHighlighter>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => handleCopyToClipboard(generatedPythonModels.join('\n\n'))}
-                  className="w-full mt-4 px-4 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-500"
-                >
-                  Copiar Modelos Python
-                </button>
-              </div>
-            </div>
+            <GeneratedPythonModels
+              models={generatedPythonModels}
+              onCopy={handleCopyToClipboard}
+            />
           )}
         </div>
       </div>
+
+      <ScrollToTopButton />
 
       <ErrorDialog
         isOpen={showDialog}
