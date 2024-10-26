@@ -6,7 +6,7 @@ import { ErrorDialog } from '@/components/ErrorDialog';
 import { GeneratedInterfaces } from '@/components/GeneratedInterfaces';
 import { GeneratedPythonModels } from '@/components/GeneratedPythonModels';
 import ScrollToTopButton from '@/components/ScrollToTopButton';
-import Footer from '@/components/Footer'; // Importación del Footer
+import Footer from '@/components/Footer';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { quicktype, InputData, jsonInputForTargetLanguage } from 'quicktype-core';
@@ -21,6 +21,7 @@ export default function Home() {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [isError, setIsError] = useState(true);
+  const [wasRepaired, setWasRepaired] = useState(false);
   const formattedListRef = useRef<HTMLDivElement | null>(null);
   const interfacesSectionRef = useRef<HTMLDivElement | null>(null);
   const pythonModelsSectionRef = useRef<HTMLDivElement | null>(null);
@@ -39,11 +40,12 @@ export default function Home() {
   }, [formattedJsonList]);
 
   // Formatear JSON y agregarlo a la lista
-  const handleFormatJson = (jsonInput: string) => {
+  const handleFormatJson = (jsonInput: string, wasRepaired: boolean) => {
     try {
       const parsedJson = JSON.parse(jsonInput);
       const formattedJson = JSON.stringify(parsedJson, null, 2);
       setFormattedJsonList((prevList) => [formattedJson, ...prevList]);
+      setWasRepaired(wasRepaired); // Actualiza si hubo reparación
 
       // Scroll automático al último JSON formateado
       setTimeout(() => {
@@ -184,6 +186,20 @@ export default function Home() {
                 </button>
               </div>
             </div>
+
+            {/* Notificacion */}
+            {wasRepaired && (
+              <div className="bg-yellow-600 text-white px-3 py-2 rounded-md mb-4 mt-4">
+                {/* metele icono de warning y mensaje de que el JSON fue reparado */}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 6a1 1 0 012 0v5a1 1 0 01-2 0V6zm1 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                </svg>
+                <strong>El JSON fue reparado:</strong> Se han corregido errores de formato.
+              </div>
+            )}
+
+            {/* JSON formateado */}
+
             <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
               <SyntaxHighlighter
                 language="json"

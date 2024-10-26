@@ -1,15 +1,24 @@
 "use client";
 import React, { useState } from 'react';
+import { jsonrepair } from 'jsonrepair'; // Importa jsonrepair
 
 interface JsonInputFormProps {
-  onFormat: (jsonInput: string) => void;
+  onFormat: (jsonInput: string, wasRepaired: boolean) => void;
 }
 
 export function JsonInputForm({ onFormat }: JsonInputFormProps) {
   const [jsonInput, setJsonInput] = useState('');
 
   const handleFormatClick = () => {
-    onFormat(jsonInput);
+    try {
+      // Intenta reparar el JSON malformado antes de formatearlo
+      const repairedJson = jsonrepair(jsonInput);
+      const wasRepaired = repairedJson !== jsonInput; // Verifica si se hizo alguna reparación
+      onFormat(repairedJson, wasRepaired); // Envía el JSON reparado y el estado de reparación
+    } catch (error) {
+      console.error('Error al intentar reparar el JSON:', error);
+      onFormat(jsonInput, false); // En caso de fallo, intenta formatear el original sin reparación
+    }
     setJsonInput('');
   };
 
