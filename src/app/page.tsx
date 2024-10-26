@@ -26,26 +26,28 @@ export default function Home() {
   const interfacesSectionRef = useRef<HTMLDivElement | null>(null);
   const pythonModelsSectionRef = useRef<HTMLDivElement | null>(null);
 
-  // Cargar datos desde el localStorage al iniciar
+  // Cargar el último JSON formateado desde localStorage al iniciar
   useEffect(() => {
-    const savedJsonList = localStorage.getItem('formattedJsonList');
-    if (savedJsonList) {
-      setFormattedJsonList(JSON.parse(savedJsonList));
+    const lastFormattedJson = localStorage.getItem('lastFormattedJson');
+    if (lastFormattedJson) {
+      setFormattedJsonList([lastFormattedJson]);
     }
   }, []);
 
-  // Guardar datos en localStorage cuando la lista cambia
+  // Guardar solo el último JSON formateado en localStorage
   useEffect(() => {
-    localStorage.setItem('formattedJsonList', JSON.stringify(formattedJsonList));
+    if (formattedJsonList.length > 0) {
+      localStorage.setItem('lastFormattedJson', formattedJsonList[0]);
+    }
   }, [formattedJsonList]);
 
-  // Formatear JSON y agregarlo a la lista
+  // Formatear JSON y agregarlo a la lista (historial en sesión)
   const handleFormatJson = (jsonInput: string, wasRepaired: boolean) => {
     try {
       const parsedJson = JSON.parse(jsonInput);
       const formattedJson = JSON.stringify(parsedJson, null, 2);
-      setFormattedJsonList((prevList) => [formattedJson, ...prevList]);
-      setWasRepaired(wasRepaired); // Actualiza si hubo reparación
+      setFormattedJsonList((prevList) => [formattedJson, ...prevList.slice(0, 9)]); // Historial solo en memoria (máx. 10)
+      setWasRepaired(wasRepaired);
 
       // Scroll automático al último JSON formateado
       setTimeout(() => {
@@ -62,12 +64,12 @@ export default function Home() {
     }
   };
 
-  // Borrar historial almacenado en localStorage
+  // Borrar historial almacenado en la sesión
   const handleClearHistory = () => {
-    localStorage.removeItem('formattedJsonList');
     setFormattedJsonList([]);
     setGeneratedInterfaces([]);
     setGeneratedPythonModels([]);
+    localStorage.removeItem('lastFormattedJson'); // Limpia el último JSON guardado
   };
 
   const handleCopyToClipboard = (text: string) => {
@@ -187,10 +189,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Notificacion */}
+            {/* Notificación */}
             {wasRepaired && (
               <div className="bg-yellow-600 text-white px-3 py-2 rounded-md mb-4 mt-4">
-                {/* metele icono de warning y mensaje de que el JSON fue reparado */}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 6a1 1 0 012 0v5a1 1 0 01-2 0V6zm1 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                 </svg>
@@ -199,7 +200,6 @@ export default function Home() {
             )}
 
             {/* JSON formateado */}
-
             <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
               <SyntaxHighlighter
                 language="json"
