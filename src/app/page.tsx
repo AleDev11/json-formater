@@ -22,6 +22,7 @@ export default function Home() {
   const [dialogMessage, setDialogMessage] = useState('');
   const [isError, setIsError] = useState(true);
   const [wasRepaired, setWasRepaired] = useState(false);
+  const [repairDetails, setRepairDetails] = useState<string | null>(null); // Detalles de reparación
   const formattedListRef = useRef<HTMLDivElement | null>(null);
   const interfacesSectionRef = useRef<HTMLDivElement | null>(null);
   const pythonModelsSectionRef = useRef<HTMLDivElement | null>(null);
@@ -42,12 +43,13 @@ export default function Home() {
   }, [formattedJsonList]);
 
   // Formatear JSON y agregarlo a la lista (historial en sesión)
-  const handleFormatJson = (jsonInput: string, wasRepaired: boolean) => {
+  const handleFormatJson = (jsonInput: string, wasRepaired: boolean, differences: string | null) => {
     try {
       const parsedJson = JSON.parse(jsonInput);
       const formattedJson = JSON.stringify(parsedJson, null, 2);
       setFormattedJsonList((prevList) => [formattedJson, ...prevList.slice(0, 9)]); // Historial solo en memoria (máx. 10)
       setWasRepaired(wasRepaired);
+      setRepairDetails(differences); // Guarda detalles de reparación, si los hay
 
       // Scroll automático al último JSON formateado
       setTimeout(() => {
@@ -199,6 +201,14 @@ export default function Home() {
               </div>
             )}
 
+            {/* Mostrar diferencias si hubo reparaciones */}
+            {wasRepaired && repairDetails && (
+              <div
+                className="bg-gray-800 text-white px-3 py-2 rounded-md mb-4 overflow-auto"
+                dangerouslySetInnerHTML={{ __html: repairDetails }}
+              />
+            )}
+
             {/* JSON formateado */}
             <div className="bg-gray-800 p-3 rounded-md overflow-x-auto">
               <SyntaxHighlighter
@@ -219,6 +229,7 @@ export default function Home() {
           onToggleExpand={(index) => setExpandedIndex(expandedIndex === index ? null : index)}
           onCopy={handleCopyToClipboard}
           onGenerateInterface={generateTypescriptInterfaces}
+          onGeneratePythonModel={generatePythonModels}
         />
 
         {/* Sección de interfaces generadas con referencia */}

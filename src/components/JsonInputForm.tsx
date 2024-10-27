@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
-import { jsonrepair } from 'jsonrepair'; // Importa jsonrepair
+import { jsonrepair } from 'jsonrepair';
+import { diffWords } from 'diff';
 
 interface JsonInputFormProps {
-  onFormat: (jsonInput: string, wasRepaired: boolean) => void;
+  onFormat: (jsonInput: string, wasRepaired: boolean, differences: string | null) => void;
 }
 
 export function JsonInputForm({ onFormat }: JsonInputFormProps) {
@@ -14,10 +15,24 @@ export function JsonInputForm({ onFormat }: JsonInputFormProps) {
       // Intenta reparar el JSON malformado antes de formatearlo
       const repairedJson = jsonrepair(jsonInput);
       const wasRepaired = repairedJson !== jsonInput; // Verifica si se hizo alguna reparación
-      onFormat(repairedJson, wasRepaired); // Envía el JSON reparado y el estado de reparación
+
+      // Si se reparó, compara el JSON original con el reparado
+      let differences: string | null = null;
+      if (wasRepaired) {
+        const diff = diffWords(jsonInput, repairedJson);
+        differences = diff
+          .map(part => {
+            // Resalta las diferencias
+            const color = part.added ? 'green' : part.removed ? 'red' : 'gray';
+            return `<span style="color:${color};">${part.value}</span>`;
+          })
+          .join('');
+      }
+
+      onFormat(repairedJson, wasRepaired, differences); // Envía el JSON reparado, si fue reparado y las diferencias
     } catch (error) {
       console.error('Error al intentar reparar el JSON:', error);
-      onFormat(jsonInput, false); // En caso de fallo, intenta formatear el original sin reparación
+      onFormat(jsonInput, false, null); // En caso de fallo, intenta formatear el original sin reparación
     }
     setJsonInput('');
   };

@@ -7,7 +7,8 @@ interface FormattedJsonListProps {
   expandedIndex: number | null;
   onToggleExpand: (index: number) => void;
   onCopy: (text: string) => void;
-  onGenerateInterface: (jsonString: string) => void; // Nueva función
+  onGenerateInterface: (jsonString: string) => void;
+  onGeneratePythonModel: (jsonString: string) => void; // Nueva función para Python
 }
 
 export function FormattedJsonList({
@@ -16,6 +17,7 @@ export function FormattedJsonList({
   onToggleExpand,
   onCopy,
   onGenerateInterface,
+  onGeneratePythonModel, // Nueva función para Python
 }: FormattedJsonListProps) {
   return (
     <div className="bg-gray-800 p-6 rounded-md shadow-md">
@@ -60,6 +62,12 @@ export function FormattedJsonList({
                       className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
                     >
                       Generar Interfaz
+                    </button>
+                    <button
+                      onClick={() => onGeneratePythonModel(formattedJson)}
+                      className="text-sm px-3 py-1 bg-yellow-600 rounded-md hover:bg-yellow-500"
+                    >
+                      Generar Modelo Python
                     </button>
                   </div>
                 </div>
