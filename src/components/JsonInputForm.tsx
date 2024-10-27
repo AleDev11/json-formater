@@ -3,6 +3,26 @@ import React, { useState } from 'react';
 import { jsonrepair } from 'jsonrepair';
 import { diffWords } from 'diff';
 
+// Función para limpiar errores JSON comunes con regex
+function cleanJsonString(input: string): string {
+  let cleanedInput = input;
+
+  // Elimina comas dobles o múltiples
+  cleanedInput = cleanedInput.replace(/,+/g, ',');
+
+  // Añade comas faltantes entre elementos clave-valor
+  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1'); // Entre objetos
+  cleanedInput = cleanedInput.replace(/"(\s*)"(\s*:\s*)/g, '","$2'); // Entre claves y valores
+
+  // Corrige comillas simples a comillas dobles
+  cleanedInput = cleanedInput.replace(/'([^']+)'/g, '"$1"');
+
+  // Añade comas entre propiedades faltantes
+  cleanedInput = cleanedInput.replace(/"(\s*[^"]+)"\s*:/g, '"$1":').replace(/}\s*"/g, '}, "');
+
+  return cleanedInput;
+}
+
 interface JsonInputFormProps {
   onFormat: (jsonInput: string, wasRepaired: boolean, differences: string | null) => void;
 }
@@ -12,9 +32,12 @@ export function JsonInputForm({ onFormat }: JsonInputFormProps) {
 
   const handleFormatClick = () => {
     try {
-      // Intenta reparar el JSON malformado antes de formatearlo
-      const repairedJson = jsonrepair(jsonInput);
-      const wasRepaired = repairedJson !== jsonInput; // Verifica si se hizo alguna reparación
+      // Limpieza previa usando regex antes de intentar reparar el JSON
+      const cleanedJson = cleanJsonString(jsonInput);
+
+      // Intenta reparar el JSON malformado después de la limpieza
+      const repairedJson = jsonrepair(cleanedJson);
+      const wasRepaired = repairedJson !== jsonInput;
 
       // Si se reparó, compara el JSON original con el reparado
       let differences: string | null = null;
@@ -22,17 +45,16 @@ export function JsonInputForm({ onFormat }: JsonInputFormProps) {
         const diff = diffWords(jsonInput, repairedJson);
         differences = diff
           .map(part => {
-            // Resalta las diferencias
             const color = part.added ? 'green' : part.removed ? 'red' : 'gray';
             return `<span style="color:${color};">${part.value}</span>`;
           })
           .join('');
       }
 
-      onFormat(repairedJson, wasRepaired, differences); // Envía el JSON reparado, si fue reparado y las diferencias
+      onFormat(repairedJson, wasRepaired, differences);
     } catch (error) {
       console.error('Error al intentar reparar el JSON:', error);
-      onFormat(jsonInput, false, null); // En caso de fallo, intenta formatear el original sin reparación
+      onFormat(jsonInput, false, null);
     }
     setJsonInput('');
   };

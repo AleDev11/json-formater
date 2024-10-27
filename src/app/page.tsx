@@ -11,6 +11,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { quicktype, InputData, jsonInputForTargetLanguage } from 'quicktype-core';
 import jsonToTS from 'json-to-ts';
+import Python from '@/components/icons/python';
+import TypeScript from '@/components/icons/ts';
 
 export default function Home() {
   const [formattedJsonList, setFormattedJsonList] = useState<string[]>([]);
@@ -165,6 +167,8 @@ export default function Home() {
         {/* Formulario de entrada JSON */}
         <JsonInputForm onFormat={handleFormatJson} />
 
+
+
         {formattedJsonList.length > 0 && (
           <div className="mb-8 p-4 bg-gray-700 text-white rounded-md shadow-md">
             <div className="flex justify-between items-center mb-2">
@@ -172,15 +176,15 @@ export default function Home() {
               <div className="flex gap-2">
                 <button
                   onClick={() => generateTypescriptInterfaces()}
-                  className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
+                  className="text-sm px-3 py-1 border-blue-600 border-2 rounded-md hover:bg-blue-500/20"
                 >
-                  Generar Interfaces TypeScript
+                  <TypeScript className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => generatePythonModels()}
-                  className="text-sm px-3 py-1 bg-yellow-600 rounded-md hover:bg-yellow-500"
+                  className="text-sm px-3 py-1 bg-transparent border-yellow-600 border-2 rounded-md hover:bg-yellow-500/20"
                 >
-                  Generar Modelos Python
+                  <Python className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => handleCopyToClipboard(formattedJsonList[0])}

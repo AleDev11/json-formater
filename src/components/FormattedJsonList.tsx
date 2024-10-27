@@ -1,6 +1,8 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import TypeScript from '@/components/icons/ts';
+import Python from '@/components/icons/python';
 
 interface FormattedJsonListProps {
   jsonList: string[];
@@ -59,15 +61,15 @@ export function FormattedJsonList({
                     </button>
                     <button
                       onClick={() => onGenerateInterface(formattedJson)}
-                      className="text-sm px-3 py-1 bg-blue-600 rounded-md hover:bg-blue-500"
+                      className="text-sm px-3 py-1 border-blue-600 border-2 rounded-md hover:bg-blue-500/20"
                     >
-                      Generar Interfaz
+                      <TypeScript className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => onGeneratePythonModel(formattedJson)}
-                      className="text-sm px-3 py-1 bg-yellow-600 rounded-md hover:bg-yellow-500"
+                      className="text-sm px-3 py-1 border-yellow-600 border-2 rounded-md hover:bg-yellow-500/20"
                     >
-                      Generar Modelo Python
+                      <Python className="h-5 w-5" />
                     </button>
                   </div>
                 </div>
