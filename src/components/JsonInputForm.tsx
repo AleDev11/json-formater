@@ -4,7 +4,7 @@ import { jsonrepair } from 'jsonrepair';
 import { diffWords } from 'diff';
 
 // Función para limpiar errores JSON comunes con regex
-function cleanAndFormatJSON(input) {
+function cleanAndFormatJSON(input: string) {
   let cleanedInput = input;
 
   // Cambia comillas simples a comillas dobles en claves y valores
@@ -50,7 +50,7 @@ export function JsonInputForm({ onFormat }: JsonInputFormProps) {
   const handleFormatClick = () => {
     try {
       // Limpieza previa usando regex antes de intentar reparar el JSON
-      const cleanedJson = cleanJsonString(jsonInput);
+      const cleanedJson = cleanAndFormatJSON(jsonInput);
 
       // Intenta reparar el JSON malformado después de la limpieza
       const repairedJson = jsonrepair(cleanedJson);
