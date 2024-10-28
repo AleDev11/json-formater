@@ -20,6 +20,15 @@ function cleanJsonString(input: string): string {
   // Añade comas entre propiedades faltantes
   cleanedInput = cleanedInput.replace(/"(\s*[^"]+)"\s*:/g, '"$1":').replace(/}\s*"/g, '}, "');
 
+  // Elimina comas al final de objetos
+  cleanedInput = cleanedInput.replace(/,(\s*})/g, '$1');
+
+  // poner comas en multiples json
+  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1');
+
+  // Elimina comas al final de arrays
+  cleanedInput = cleanedInput.replace(/,(\s*])/g, '$1');
+
   return cleanedInput;
 }
 
