@@ -4,8 +4,17 @@ import { jsonrepair } from 'jsonrepair';
 import { diffWords } from 'diff';
 
 // Función para limpiar errores JSON comunes con regex
-function cleanJsonString(input: string): string {
+function cleanAndFormatJSON(input) {
   let cleanedInput = input;
+
+  // Cambia comillas simples a comillas dobles en claves y valores
+  cleanedInput = cleanedInput.replace(/'([^']+)'/g, '"$1"');
+
+  // Añade comillas faltantes a claves sin comillas dobles
+  cleanedInput = cleanedInput.replace(/([{,]\s*)(\w+)\s*:/g, '$1"$2":');
+
+  // Añade comas entre objetos si están pegados
+  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1');
 
   // Elimina comas dobles o múltiples
   cleanedInput = cleanedInput.replace(/,+/g, ',');
@@ -14,22 +23,21 @@ function cleanJsonString(input: string): string {
   cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1'); // Entre objetos
   cleanedInput = cleanedInput.replace(/"(\s*)"(\s*:\s*)/g, '","$2'); // Entre claves y valores
 
-  // Corrige comillas simples a comillas dobles
-  cleanedInput = cleanedInput.replace(/'([^']+)'/g, '"$1"');
+  // Elimina comas al final de objetos y arrays
+  cleanedInput = cleanedInput.replace(/,(\s*[}\]])/g, '$1');
 
-  // Añade comas entre propiedades faltantes
-  cleanedInput = cleanedInput.replace(/"(\s*[^"]+)"\s*:/g, '"$1":').replace(/}\s*"/g, '}, "');
+  // Encapsula el contenido en un array si hay múltiples objetos
+  if (!cleanedInput.startsWith('[') && cleanedInput.includes('}{')) {
+    cleanedInput = `[${cleanedInput}]`;
+  }
 
-  // Elimina comas al final de objetos
-  cleanedInput = cleanedInput.replace(/,(\s*})/g, '$1');
-
-  // poner comas en multiples json
-  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1');
-
-  // Elimina comas al final de arrays
-  cleanedInput = cleanedInput.replace(/,(\s*])/g, '$1');
-
-  return cleanedInput;
+  try {
+    // Intentamos hacer el parseo a JSON para ver si está bien formateado
+    return JSON.parse(cleanedInput);
+  } catch (error) {
+    console.error("No se pudo procesar el JSON:", error);
+    return null;
+  }
 }
 
 interface JsonInputFormProps {
