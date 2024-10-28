@@ -4,17 +4,8 @@ import { jsonrepair } from 'jsonrepair';
 import { diffWords } from 'diff';
 
 // Función para limpiar errores JSON comunes con regex
-function cleanAndFormatJSON(input: string) {
+function cleanJsonString(input: string): string {
   let cleanedInput = input;
-
-  // Cambia comillas simples a comillas dobles en claves y valores
-  cleanedInput = cleanedInput.replace(/'([^']+)'/g, '"$1"');
-
-  // Añade comillas faltantes a claves sin comillas dobles
-  cleanedInput = cleanedInput.replace(/([{,]\s*)(\w+)\s*:/g, '$1"$2":');
-
-  // Añade comas entre objetos si están pegados
-  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1');
 
   // Elimina comas dobles o múltiples
   cleanedInput = cleanedInput.replace(/,+/g, ',');
@@ -23,21 +14,19 @@ function cleanAndFormatJSON(input: string) {
   cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1'); // Entre objetos
   cleanedInput = cleanedInput.replace(/"(\s*)"(\s*:\s*)/g, '","$2'); // Entre claves y valores
 
-  // Elimina comas al final de objetos y arrays
-  cleanedInput = cleanedInput.replace(/,(\s*[}\]])/g, '$1');
+  // Corrige comillas simples a comillas dobles
+  cleanedInput = cleanedInput.replace(/'([^']+)'/g, '"$1"');
 
-  // Encapsula el contenido en un array si hay múltiples objetos
-  if (!cleanedInput.startsWith('[') && cleanedInput.includes('}{')) {
-    cleanedInput = `[${cleanedInput}]`;
-  }
+  // Añade comas entre propiedades faltantes
+  cleanedInput = cleanedInput.replace(/"(\s*[^"]+)"\s*:/g, '"$1":').replace(/}\s*"/g, '}, "');
 
-  try {
-    // Intentamos hacer el parseo a JSON para ver si está bien formateado
-    return JSON.parse(cleanedInput);
-  } catch (error) {
-    console.error("No se pudo procesar el JSON:", error);
-    return null;
-  }
+  // Elimina comas al final de objetos
+  cleanedInput = cleanedInput.replace(/,(\s*})/g, '$1');
+  // poner comas en multiples json
+  cleanedInput = cleanedInput.replace(/}(\s*{)/g, '},$1');
+  // Elimina comas al final de arrays
+  cleanedInput = cleanedInput.replace(/,(\s*])/g, '$1');
+  return cleanedInput;
 }
 
 interface JsonInputFormProps {
@@ -50,7 +39,7 @@ export function JsonInputForm({ onFormat }: JsonInputFormProps) {
   const handleFormatClick = () => {
     try {
       // Limpieza previa usando regex antes de intentar reparar el JSON
-      const cleanedJson = cleanAndFormatJSON(jsonInput);
+      const cleanedJson = cleanJsonString(jsonInput);
 
       // Intenta reparar el JSON malformado después de la limpieza
       const repairedJson = jsonrepair(cleanedJson);
